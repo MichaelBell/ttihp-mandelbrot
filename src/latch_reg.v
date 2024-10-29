@@ -13,59 +13,12 @@ module latch_reg #(
     output wire [WIDTH-1:0] data_out
 );
 
-`ifdef SIM
-    reg [WIDTH-1:0] state;
-    always @(clk or wen or data_in) begin
-        if (!clk && wen) state <= data_in;
-    end
-
-    assign data_out = state;
-
-`elsif ICE40
+    // For now just use flip flops for simplicity.
     reg [WIDTH-1:0] state;
     always @(posedge clk) begin
         if (wen) state <= data_in;
     end
 
     assign data_out = state;
-
-`elsif SCL_sky130_fd_sc_hd
-    wire clk_b;
-    wire gated_clk;
-
-    // Lint for sky130 cells expects power pins, so disable the warning
-    /* verilator lint_off PINMISSING */
-    sky130_fd_sc_hd__inv_1 CLKINV(.Y(clk_b), .A(clk));
-
-    generate
-        if (WIDTH <= 6)
-            sky130_fd_sc_hd__dlclkp_1 CG( .CLK(clk_b), .GCLK(gated_clk), .GATE(wen) );
-        else if (WIDTH <= 12)
-            sky130_fd_sc_hd__dlclkp_2 CG( .CLK(clk_b), .GCLK(gated_clk), .GATE(wen) );
-        else
-            sky130_fd_sc_hd__dlclkp_4 CG( .CLK(clk_b), .GCLK(gated_clk), .GATE(wen) );
-    endgenerate
-
-    genvar i;
-    generate
-        for (i = 0; i < WIDTH; i = i+1) begin
-            sky130_fd_sc_hd__dlxtp_1 state (.Q(data_out[i]), .D(data_in[i]), .GATE(gated_clk) );
-        end
-    endgenerate
-    /* verilator lint_on PINMISSING */
-`else
-    wire clk_b;
-    wire gated_clk;
-
-    sg13g2_inv_1 CLKINV(.Y(clk_b), .A(clk));
-    sg13g2_lgcp_1 CG( .CLK(clk_b), .GCLK(gated_clk), .GATE(wen) );
-
-    genvar i;
-    generate
-        for (i = 0; i < WIDTH; i = i+1) begin
-            sg13g2_dlhq_1 state (.Q(data_out[i]), .D(data_in[i]), .GATE(gated_clk) );
-        end
-    endgenerate
-`endif
 
 endmodule
