@@ -25,7 +25,7 @@ module tt_um_MichaelBell_mandelbrot (
 
   localparam BITS = 16;
 
-  localparam max_step = 27;
+  localparam max_step = 15;
 
   reg signed [2:-(BITS-3)] x0;
   reg signed [1:-(BITS-3)] y0;
@@ -54,19 +54,17 @@ module tt_um_MichaelBell_mandelbrot (
   reg signed [2:-(BITS-3)] x;
   reg signed [2:-(BITS-3)] y;
   reg [3:0] iter;
-  reg [3:0] last_iter;
+  reg [4:0] last_iter;
   
-  wire [3:0] next_iter;
+  wire [4:0] next_iter;
 
   wire signed [2:-(BITS-3)] x_out;
   wire signed [2:-(BITS-3)] y_out;
   wire escape;
 
-  reg [4:0] step;
+  reg [3:0] step;
 
   mandel_iter #(.BITS(BITS)) i_mandel (
-    .clk(clk),
-    .phase(step[0]),
     .x0(x0),
     .y0({y0[1], y0}),
     .x_in(x),
@@ -109,24 +107,22 @@ module tt_um_MichaelBell_mandelbrot (
       x0 <= next_x0;
       y0 <= next_y0;
     end else begin
-      if (step[0]) begin
-        iter <= next_iter;
-        if (step[4:1] == max_step[4:1]) begin
-          last_iter <= next_iter;
-          iter <= 0;
-          x0 <= next_x0_with_blank;
-          y0 <= next_y0_with_blank;
-          x <= next_x0_with_blank;
-          y <= {next_y0_with_blank[1], next_y0_with_blank};
-        end else if (!escape) begin
-          x <= x_out;
-          y <= y_out;
-        end
+      iter <= next_iter[3:0];
+      if (step == max_step) begin
+        last_iter <= next_iter;
+        iter <= 0;
+        x0 <= next_x0_with_blank;
+        y0 <= next_y0_with_blank;
+        x <= next_x0_with_blank;
+        y <= {next_y0_with_blank[1], next_y0_with_blank};
+      end else if (!escape) begin
+        x <= x_out;
+        y <= y_out;
       end
     end
   end
 
-    function [5:0] rainbow(input [3:0] idx);
+    function [5:0] rainbow(input [4:0] idx);
         case (idx)
  0: rainbow = 6'h23;
  1: rainbow = 6'h32;
@@ -142,8 +138,10 @@ module tt_um_MichaelBell_mandelbrot (
 11: rainbow = 6'h0b;
 12: rainbow = 6'h07;
 13: rainbow = 6'h03;
-14: rainbow = 6'h00;
-15: rainbow = 6'hx;
+14: rainbow = 6'h12;
+15: rainbow = 6'h21;
+16: rainbow = 6'h00;
+default: rainbow = 6'hx;
         endcase
     endfunction  
 

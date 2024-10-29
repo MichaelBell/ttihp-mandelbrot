@@ -26,9 +26,9 @@ module coord_control #(parameter BITS=16) (
 );
 
   localparam [2:-(BITS-3)] x_left_default = -2 << (BITS-3);
-  localparam [1:-(BITS-3)] y_top_default = 3 << (BITS-4);
-  localparam [-4:-(BITS-3)] x_inc_default = 240;
-  localparam [-6:-(BITS-3)] y_inc_default = -51;
+  localparam [1:-(BITS-3)] y_top_default = 16560;
+  localparam [-4:-(BITS-3)] x_inc_default = 138;
+  localparam [-6:-(BITS-3)] y_inc_default = -69;
 
   wire signed [2:-(BITS-3)] x_left;
   wire signed [1:-(BITS-3)] y_top;
@@ -53,10 +53,10 @@ module coord_control #(parameter BITS=16) (
     else demo_update <= demo_update_en && next_frame;
   end
 
-  wire demo_reset = y_inc_row == 51;
+  wire demo_reset = y_inc_row == 69;
   wire signed [1:-(BITS-3)] demo_y_top = demo_reset ? y_top_default : y0 - 240;
   wire signed [-6:-(BITS-3)] demo_y_inc = demo_reset ? y_inc_default : y_inc_row + 1;
-  wire signed [-4:-(BITS-3)] demo_x_inc = demo_y_inc[-6] ? {~demo_y_inc, 2'b00} : {demo_y_inc, 2'b00};
+  wire signed [-4:-(BITS-3)] demo_x_inc = demo_y_inc[-6] ? {1'b0, ~demo_y_inc, 1'b0} : {1'b0, demo_y_inc, 1'b0};
 
   latch_reg #(.WIDTH(BITS)) l_xl (
     .clk(clk),
