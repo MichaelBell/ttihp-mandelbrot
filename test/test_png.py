@@ -11,16 +11,16 @@ from mandelbrot import mandelbrot_calc
 from PIL import Image
 
 
-IMAGE_WIDTH = 103
-IMAGE_REP = 7
+IMAGE_WIDTH = 180
+IMAGE_REP = 4
 IMAGE_HEIGHT = 480
 
 # How many iterations to run
-MAX_ITER = 14
+MAX_ITER = 16
 
 # Define the plotting range
-X_RANGE = (-2.0, 0.8)
-Y_RANGE = (-1.2, 1.2)
+X_RANGE = (-2.0, 1.03)
+Y_RANGE = (-2.0, 2.0)
 
 
 @cocotb.test()
@@ -56,8 +56,8 @@ async def test_mandelbrot_py_png(dut):
                        (0,    0xA0, 0xF0),
                        (0,    0x50, 0xF0),
                        (0,    0,    0xF0),
-                       #(0,    0,    0xA0),
-                       #(0,    0,    0x50),
+                       (0,    0,    0xA0),
+                       (0,    0,    0x50),
                        (0, 0, 0)]
             for i in range(IMAGE_REP):
                 image.putpixel((IMAGE_REP*px+i, py), palette[m])

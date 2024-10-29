@@ -138,8 +138,8 @@ module tt_um_MichaelBell_mandelbrot (
 11: rainbow = 6'h0b;
 12: rainbow = 6'h07;
 13: rainbow = 6'h03;
-14: rainbow = 6'h12;
-15: rainbow = 6'h21;
+14: rainbow = 6'h02;
+15: rainbow = 6'h01;
 16: rainbow = 6'h00;
 default: rainbow = 6'hx;
         endcase
