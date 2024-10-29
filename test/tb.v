@@ -1,30 +1,32 @@
-`default_nettype none
-`timescale 1ns / 1ps
+`default_nettype none `timescale 1ns / 1ps
 
 /* This testbench just instantiates the module and makes some convenient wires
    that can be driven / tested by the cocotb test.py.
 */
 module tb ();
 
-  // Dump the signals to a VCD file. You can view it with gtkwave.
-  initial begin
-    $dumpfile("tb.vcd");
-    $dumpvars(0, tb);
-    #1;
-  end
+  reg signed [12:0] value_in;
+  reg [2:0] ctrl_in;
 
   // Wire up the inputs and outputs:
   reg clk;
   reg rst_n;
   reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
+  wire [7:0] ui_in = {value_in[4:0], ctrl_in};
+  wire [7:0] uio_in = {value_in[12:5]};
   wire [7:0] uo_out;
   wire [7:0] uio_out;
   wire [7:0] uio_oe;
 
+  wire hsync;
+  wire vsync;
+  wire [5:0] rgb;
+  wire [1:0] red;
+  wire [1:0] green;
+  wire [1:0] blue;
+
   // Replace tt_um_example with your module name:
-  tt_um_example user_project (
+  tt_um_MichaelBell_mandelbrot user_project (
       .ui_in  (ui_in),    // Dedicated inputs
       .uo_out (uo_out),   // Dedicated outputs
       .uio_in (uio_in),   // IOs: Input path
@@ -35,4 +37,11 @@ module tb ();
       .rst_n  (rst_n)     // not reset
   );
 
+  assign hsync = uo_out[7];
+  assign vsync = uo_out[3];
+  assign rgb = {uo_out[0], uo_out[4], uo_out[1], uo_out[5], uo_out[2], uo_out[6]};
+  assign red = rgb[5:4];
+  assign green = rgb[3:2];
+  assign blue = rgb[1:0];
+  
 endmodule
