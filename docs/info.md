@@ -11,13 +11,13 @@ You can also include images in this folder and reference them in the markdown. E
 
 The Mandelbrot fractal is computed "racing the beam" and displayed through the [TinyVGA Pmod](https://github.com/mole99/tiny-vga).
 
-One iteration of the computation is done over two clock cycles, and a maximum iteration depth of 14 iterations is used.  The design is clocked at 100MHz, allowing four clock cycles per 25MHz pixel clock.  This means one value is computed every 7 pixels, giving a result like this:
+One iteration of the computation is done every clock cycle, and a maximum iteration depth of 16 iterations is used.  The design is clocked at 100MHz, allowing four clock cycles per 25MHz pixel clock.  This means one value is computed every 4 pixels, giving a result like this:
 
 ![The Mandelbrot set](mandelvga.png)
 
 The computation uses 16-bit fixed point arithmetic.  The multiplications are approximated to save area, giving a possible error in the least significant bit.  This gives at least 14-bit accuracy on each iteration.
 
-The output image is at a 720x480 resolution (~103x480 Mandelbrot pixels).
+The output image is at a 720x480 resolution (180x480 Mandelbrot pixels).
 
 ## How to test
 
@@ -40,7 +40,7 @@ These values should only be updated during vsync.
 | 6    | Set X increment per row to value[7:0] / 2^13 | 
 | 7    | Set Y increment per row to value[7:0] / 2^13 |
 
-Note there are 103 columns and 480 rows displayed.
+Note there are 180 columns and 480 rows displayed.
 
 ## External hardware
 

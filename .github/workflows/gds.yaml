@@ -71,7 +71,7 @@ jobs:
        run: |
          cp tt_submission/*.v "$TEST_DIR/gate_level_netlist.v"
          cd "$TEST_DIR"
-         rm -f sim_build/rtl/*.fst results.xml *.png
+         rm -f sim_build/gl/*.fst results.xml *.png
          make clean
          GATES=yes make
  
@@ -85,7 +85,7 @@ jobs:
        with:
            name: gatelevel_test_vcd
            path: |
-             ${{ env.TEST_DIR }}/sim_build/rtl/*.fst
+             ${{ env.TEST_DIR }}/sim_build/gl/*.fst
              ${{ env.TEST_DIR }}/results.xml
              ${{ env.TEST_DIR }}/*.png
 
